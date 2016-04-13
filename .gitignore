@@ -1,0 +1,13 @@
+# Nuget packages
+Packages/
+
+# Compiling result files
+Bin/
+Obj/
+
+# Visual Studion and ReSharper files
+_ReSharper.Caches/
+.vs/
+*.sdf
+*.suo
+*.user

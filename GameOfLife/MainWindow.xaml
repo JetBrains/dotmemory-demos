@@ -1,0 +1,29 @@
+﻿<Window x:Class="GameOfLife.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:view="clr-namespace:GameOfLife.View"
+        xmlns:viewModel="clr-namespace:GameOfLife.ViewModel"
+        Title="MainWindow" Height="350" Width="525"
+
+        mc:Ignorable="d">
+
+  <FrameworkElement.Resources>
+    <DataTemplate DataType="{x:Type viewModel:MainScreenViewModel}">
+      <DockPanel>
+        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+          <Button Content="Start" Command="{Binding StartCommand}"/>
+          <Button Content="One step" Command="{Binding OneStepCommand}"/>
+          <Button Content="Stop" Command="{Binding StopCommand}"/>
+          <Button Content="Generate" Command="{Binding GenerateCommand}"/>
+          <Button Content="Clear" Command="{Binding ClearCommand}"/>
+        </StackPanel>
+        <view:FieldControl1 ViewModel="{Binding Field}" />
+      </DockPanel>
+    </DataTemplate>
+  </FrameworkElement.Resources>
+  
+  <ContentControl Content="{Binding}" />
+
+</Window>
