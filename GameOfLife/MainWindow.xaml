@@ -5,22 +5,45 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:view="clr-namespace:GameOfLife.View"
         xmlns:viewModel="clr-namespace:GameOfLife.ViewModel"
-        Title="MainWindow" Height="350" Width="525"
-
+        Title="MainWindow" 
+        WindowState="Maximized"
         mc:Ignorable="d">
 
   <FrameworkElement.Resources>
     <DataTemplate DataType="{x:Type viewModel:MainScreenViewModel}">
       <DockPanel>
-        <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
-          <Button Content="Start" Command="{Binding StartCommand}"/>
-          <Button Content="One step" Command="{Binding OneStepCommand}"/>
-          <Button Content="Stop" Command="{Binding StopCommand}"/>
-          <Button Content="Generate" Command="{Binding GenerateCommand}"/>
-          <Button Content="Clear" Command="{Binding ClearCommand}"/>
-        </StackPanel>
-        <view:FieldControl1 ViewModel="{Binding Field}" />
+        <DockPanel Margin="0,5" DockPanel.Dock="Top">
+          <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+            <Button Content="Add Petri Dish" Command="{Binding AddPetriDishCommand}"/>
+            <Button Content="Remove Petri Dish" Command="{Binding RemovePetriDishCommand}"/>
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
+            <Button Content="Start" Command="{Binding StartCommand}"/>
+            <Button Content="One step" Command="{Binding OneStepCommand}"/>
+            <Button Content="Stop" Command="{Binding StopCommand}"/>
+            <Button Content="Generate" Command="{Binding GenerateCommand}"/>
+            <Button Content="Clear" Command="{Binding ClearCommand}"/>
+          </StackPanel>
+        </DockPanel>
+        
+        <ItemsControl ItemsSource="{Binding Fields}">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <WrapPanel />
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+          <ItemsControl.ItemContainerStyle>
+            <Style TargetType="ContentPresenter">
+              <Setter Property="Margin" Value="5"/>
+            </Style>
+          </ItemsControl.ItemContainerStyle>
+        </ItemsControl>
+        
       </DockPanel>
+    </DataTemplate>
+    
+    <DataTemplate DataType="{x:Type viewModel:Field}">
+      <view:FieldControl1 ViewModel="{Binding}" />
     </DataTemplate>
   </FrameworkElement.Resources>
   

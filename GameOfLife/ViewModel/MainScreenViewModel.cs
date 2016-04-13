@@ -1,61 +1,61 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using JetBrains.Annotations;
 
 namespace GameOfLife.ViewModel
 {
   public class MainScreenViewModel : INotifyPropertyChanged
   {
     private bool isStarted;
-    private readonly DelegateCommand addFieldCommand;
-    private readonly DelegateCommand removeFieldCommand;
+    private readonly DelegateCommand addPetriDishCommand;
+    private readonly DelegateCommand removePetriDishCommand;
     private readonly DelegateCommand startCommand;
     private readonly DelegateCommand stopCommand;
     private readonly DelegateCommand oneStepCommand;
     private readonly DelegateCommand clearCommand;
     private readonly DelegateCommand generateCommand;
 
-    private Field field;
+    private readonly ObservableCollection<Field> fields;
+    private static readonly int DefaultDishWidth = 80;
 
     public MainScreenViewModel()
     {
-      addFieldCommand = new DelegateCommand(AddField, () => !isStarted);
-      removeFieldCommand = new DelegateCommand(RemoveField, () => !isStarted);
+      addPetriDishCommand = new DelegateCommand(AddField, () => !isStarted);
+      removePetriDishCommand = new DelegateCommand(RemoveField, () => !isStarted);
       startCommand = new DelegateCommand(Start, () => !isStarted);
       stopCommand = new DelegateCommand(Stop, () => isStarted);
       oneStepCommand = new DelegateCommand(OneStep, () => !isStarted);
       clearCommand = new DelegateCommand(Clear, () => !isStarted);
       generateCommand = new DelegateCommand(Generate, () => !isStarted);
 
-      field = new Field(160, 100);
-      field.GenerateInitialState();
-    }
+      fields = new ObservableCollection<Field>{new Field(DefaultDishWidth, 50), new Field(DefaultDishWidth, 50)};
 
-    private void RemoveField()
-    {
-      throw new NotImplementedException();
+      foreach (var field in fields)
+        field.GenerateInitialState();
     }
 
     private void AddField()
     {
-      throw new NotImplementedException();
+      var dish = new Field(DefaultDishWidth, 50);
+      dish.GenerateInitialState();
+      fields.Add(dish);
+    }
+
+    private void RemoveField()
+    {
+      fields.RemoveAt(fields.Count - 1);
     }
 
     private void OneStep()
     {
-      field.PerformOneStep();
+      foreach (var field in fields)
+        field.PerformOneStep();
     }
 
-    public Field Field
+    public IEnumerable<Field> Fields
     {
-      get { return field; }
-      private set
-      {
-        field = value;
-        RaisePropertyChanged();
-      }
+      get { return fields; }
     }
 
     public ICommand StartCommand
@@ -83,28 +83,42 @@ namespace GameOfLife.ViewModel
       get { return generateCommand; }
     }
 
+    public DelegateCommand AddPetriDishCommand
+    {
+      get { return addPetriDishCommand; }
+    }
+
+    public DelegateCommand RemovePetriDishCommand
+    {
+      get { return removePetriDishCommand; }
+    }
+
     private void Start()
     {
       isStarted = true;
       UpdateCommandCanExecuteState();
-      field.Start();
+      foreach (var field in fields)
+        field.Start();
     }
 
     private void Stop()
     {
       isStarted = false;
       UpdateCommandCanExecuteState();
-      field.Stop();
+      foreach (var field in fields)
+        field.Stop();
     }
 
     private void Generate()
     {
-      field.GenerateInitialState();
+      foreach (var field in fields)
+        field.GenerateInitialState();
     }
 
     private void Clear()
     {
-      field.Clear();
+      foreach (var field in fields)
+        field.Clear();
     }
 
     private void UpdateCommandCanExecuteState()
@@ -113,16 +127,10 @@ namespace GameOfLife.ViewModel
       stopCommand.RaiseCanExcuteChanged();
       clearCommand.RaiseCanExcuteChanged();
       generateCommand.RaiseCanExcuteChanged();
+      addPetriDishCommand.RaiseCanExcuteChanged();
+      removePetriDishCommand.RaiseCanExcuteChanged();
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
-
-    [NotifyPropertyChangedInvocator]
-    protected virtual void RaisePropertyChanged([CallerMemberName] string propertyName = null)
-    {
-      var handler = PropertyChanged;
-      if (handler != null) 
-        handler(this, new PropertyChangedEventArgs(propertyName));
-    }
   }
 }
