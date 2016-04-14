@@ -16,7 +16,11 @@ namespace GameOfLife.View
     private void ViewModelOnUpdated(object sender, EventArgs eventArgs)
     {
       if (!Dispatcher.CheckAccess())
-        Dispatcher.Invoke(UpdateUi);
+        Dispatcher.Invoke(new Func<object>(() =>
+        {
+          UpdateUi();
+          return null;
+        }));
       else
         UpdateUi();
     }
@@ -40,9 +44,9 @@ namespace GameOfLife.View
         }
     }
 
-    public Field ViewModel
+    public PetriDish ViewModel
     {
-      get { return (Field) GetValue(ViewModelProperty); }
+      get { return (PetriDish) GetValue(ViewModelProperty); }
       set { SetValue(ViewModelProperty, value); }
     }
 
@@ -54,7 +58,7 @@ namespace GameOfLife.View
       return new Size(width * CellSize, height * CellSize);
     }
 
-    private void OnViewModelChanged(Field oldValue, Field newValue)
+    private void OnViewModelChanged(PetriDish oldValue, PetriDish newValue)
     {
       if (oldValue != null)
         oldValue.Updated -= ViewModelOnUpdated;
@@ -112,13 +116,13 @@ namespace GameOfLife.View
     }
 
     public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
-      "ViewModel", typeof(Field), typeof(FieldControl1), new PropertyMetadata(default(Field), OnViewModelChanged));
+      "ViewModel", typeof(PetriDish), typeof(FieldControl1), new PropertyMetadata(default(PetriDish), OnViewModelChanged));
 
     private static readonly int CellSize = 5;
 
     private static void OnViewModelChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
     {
-      ((FieldControl1)dependencyObject).OnViewModelChanged(args.OldValue as Field, args.NewValue as Field);
+      ((FieldControl1)dependencyObject).OnViewModelChanged(args.OldValue as PetriDish, args.NewValue as PetriDish);
     }
   }
 }

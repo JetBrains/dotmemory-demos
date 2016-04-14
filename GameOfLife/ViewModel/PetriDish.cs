@@ -1,25 +1,30 @@
 ﻿using System;
-using System.Threading;
 
 namespace GameOfLife.ViewModel
 {
-  public class Field
+  public class PetriDish : IDisposable
   {
-    private const int UpdateOnceIn = 200;
-
     private readonly Cell[,] currentCells;
     private readonly Cell[,] nextGenerationCells;
     private readonly int height;
     private readonly int width;
-    private readonly Timer timer;
+    private readonly ITimer timer;
 
-    public Field(int width, int height)
+    public PetriDish(int width, int height, ITimer timer)
     {
       this.width = width;
       this.height = height;
-      timer = new Timer(UpdateCellsState);
+      this.timer = timer;
+      timer.Tick += UpdateCellsState;
       currentCells = new Cell[width, height];
       nextGenerationCells = new Cell[width, height];
+
+      for (var i = 0; i < width; i++)
+        for (var j = 0; j < height; j++)
+        {
+          currentCells[i,j] = new Cell(0, false);
+          nextGenerationCells[i,j] = new Cell(0, false);
+        }
 
       Clear();
     }
@@ -34,8 +39,8 @@ namespace GameOfLife.ViewModel
       for (var i = 0; i < width; i++)
         for (var j = 0; j < height; j++)
         {
-          currentCells[i,j] = new Cell(0, false);
-          nextGenerationCells[i,j] = new Cell(0, false);
+          currentCells[i,j].IsAlive = false;
+          currentCells[i,j].Age = 0;
         }
 
       RaiseUpdated();
@@ -50,7 +55,7 @@ namespace GameOfLife.ViewModel
       RaiseUpdated();
     }
 
-    private void UpdateCellsState(object state)
+    private void UpdateCellsState()
     {
       for (var i = 0; i < width; i++)
         for (var j = 0; j < height; j++)
@@ -66,19 +71,9 @@ namespace GameOfLife.ViewModel
       RaiseUpdated();
     }
 
-    public void Start()
-    {
-      timer.Change(0, UpdateOnceIn);
-    }
-
     public void PerformOneStep()
     {
-      UpdateCellsState(null);
-    }
-
-    public void Stop()
-    {
-      timer.Change(-1, UpdateOnceIn);
+      UpdateCellsState();
     }
 
     public event EventHandler Updated;
@@ -156,6 +151,11 @@ namespace GameOfLife.ViewModel
       var handler = Updated;
       if (handler != null) 
         handler(this, EventArgs.Empty);
+    }
+
+    public void Dispose()
+    {
+      timer.Tick -= UpdateCellsState;
     }
   }
 }
