@@ -16,7 +16,11 @@ namespace GameOfLife.View
     private void ViewModelOnUpdated(object sender, EventArgs eventArgs)
     {
       if (!Dispatcher.CheckAccess())
-        Dispatcher.Invoke(UpdateUi);
+        Dispatcher.Invoke(new Func<object>(() =>
+        {
+          UpdateUi();
+          return null;
+        }));
       else
         UpdateUi();
     }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Input;
 
 namespace GameOfLife.ViewModel
@@ -16,11 +17,15 @@ namespace GameOfLife.ViewModel
     private readonly DelegateCommand clearCommand;
     private readonly DelegateCommand generateCommand;
 
-    private readonly ObservableCollection<PetriDish> petriDishesCollection;
-    private static readonly int DefaultDishWidth = 80;
+    private readonly ObservableCollection<PetriDish> petriDishesCollection = new ObservableCollection<PetriDish>();
+    private const int DefaultDishWidth = 80;
+    private const int DefaultDishHeight = 50;
 
-    public MainScreenViewModel()
+    private readonly TimerImpl timer = new TimerImpl();
+
+    public MainScreenViewModel(int initialPetriDishesCount = 2)
     {
+
       addPetriDishCommand = new DelegateCommand(AddPetriDish, () => !isStarted);
       removePetriDishCommand = new DelegateCommand(RemovePetriDish, () => !isStarted);
       startCommand = new DelegateCommand(Start, () => !isStarted);
@@ -29,28 +34,39 @@ namespace GameOfLife.ViewModel
       clearCommand = new DelegateCommand(Clear, () => !isStarted);
       generateCommand = new DelegateCommand(Generate, () => !isStarted);
 
-      petriDishesCollection = new ObservableCollection<PetriDish>{new PetriDish(DefaultDishWidth, 50), new PetriDish(DefaultDishWidth, 50)};
+      for (var i = 0; i < initialPetriDishesCount; i++)
+        petriDishesCollection.Add(CreatePetriDish());
 
-      foreach (var dish in petriDishesCollection)
-        dish.GenerateInitialState();
+      foreach (var field in petriDishesCollection)
+        field.GenerateInitialState();
+    }
+
+    private PetriDish CreatePetriDish()
+    {
+      return new PetriDish(DefaultDishWidth, DefaultDishHeight, timer);
     }
 
     private void AddPetriDish()
     {
-      var dish = new PetriDish(DefaultDishWidth, 50);
+      var dish = CreatePetriDish();
       dish.GenerateInitialState();
       petriDishesCollection.Add(dish);
     }
 
     private void RemovePetriDish()
     {
-      petriDishesCollection.RemoveAt(petriDishesCollection.Count - 1);
+      var petriDish = petriDishesCollection.LastOrDefault();
+      if (petriDish != null)
+      {
+        petriDishesCollection.Remove(petriDish);
+//        petriDish.Dispose(); //fix a leak
+      }
     }
 
     private void OneStep()
     {
-      foreach (var dish in petriDishesCollection)
-        dish.PerformOneStep();
+      foreach (var field in petriDishesCollection)
+        field.PerformOneStep();
     }
 
     public IEnumerable<PetriDish> PetriDishesCollection
@@ -97,28 +113,26 @@ namespace GameOfLife.ViewModel
     {
       isStarted = true;
       UpdateCommandCanExecuteState();
-      foreach (var dish in petriDishesCollection)
-        dish.Start();
+      timer.Start();
     }
 
     private void Stop()
     {
       isStarted = false;
       UpdateCommandCanExecuteState();
-      foreach (var dish in petriDishesCollection)
-        dish.Stop();
+      timer.Stop();
     }
 
     private void Generate()
     {
-      foreach (var dish in petriDishesCollection)
-        dish.GenerateInitialState();
+      foreach (var field in petriDishesCollection)
+        field.GenerateInitialState();
     }
 
     private void Clear()
     {
-      foreach (var dish in petriDishesCollection)
-        dish.Clear();
+      foreach (var field in petriDishesCollection)
+        field.Clear();
     }
 
     private void UpdateCommandCanExecuteState()
