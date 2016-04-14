@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace GameOfLife.ViewModel
 {
-  public class Field
+  public class PetriDish
   {
     private const int UpdateOnceIn = 200;
 
@@ -13,7 +13,7 @@ namespace GameOfLife.ViewModel
     private readonly int width;
     private readonly Timer timer;
 
-    public Field(int width, int height)
+    public PetriDish(int width, int height)
     {
       this.width = width;
       this.height = height;

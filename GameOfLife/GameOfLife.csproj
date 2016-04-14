@@ -56,9 +56,9 @@
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ViewModel\Cell.cs" />
     <Compile Include="ViewModel\DelegateCommand.cs" />
-    <Compile Include="ViewModel\Field.cs" />
+    <Compile Include="ViewModel\PetriDish.cs" />
     <Compile Include="ViewModel\MainScreenViewModel.cs" />
-    <Compile Include="View\FieldControl1.cs" />
+    <Compile Include="View\FieldControl.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

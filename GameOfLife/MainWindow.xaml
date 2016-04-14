@@ -26,7 +26,7 @@
           </StackPanel>
         </DockPanel>
         
-        <ItemsControl ItemsSource="{Binding Fields}">
+        <ItemsControl ItemsSource="{Binding PetriDishesCollection}">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
               <WrapPanel />
@@ -42,8 +42,8 @@
       </DockPanel>
     </DataTemplate>
     
-    <DataTemplate DataType="{x:Type viewModel:Field}">
-      <view:FieldControl1 ViewModel="{Binding}" />
+    <DataTemplate DataType="{x:Type viewModel:PetriDish}">
+      <view:FieldControl ViewModel="{Binding}" />
     </DataTemplate>
   </FrameworkElement.Resources>
   

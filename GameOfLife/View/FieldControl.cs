@@ -8,7 +8,7 @@ using GameOfLife.ViewModel;
 
 namespace GameOfLife.View
 {
-  public class FieldControl1 : ContentControl
+  public class FieldControl : ContentControl
   {
     private Canvas canvas;
     private Ellipse[,] ellipses;
@@ -40,9 +40,9 @@ namespace GameOfLife.View
         }
     }
 
-    public Field ViewModel
+    public PetriDish ViewModel
     {
-      get { return (Field) GetValue(ViewModelProperty); }
+      get { return (PetriDish) GetValue(ViewModelProperty); }
       set { SetValue(ViewModelProperty, value); }
     }
 
@@ -54,7 +54,7 @@ namespace GameOfLife.View
       return new Size(width * CellSize, height * CellSize);
     }
 
-    private void OnViewModelChanged(Field oldValue, Field newValue)
+    private void OnViewModelChanged(PetriDish oldValue, PetriDish newValue)
     {
       if (oldValue != null)
         oldValue.Updated -= ViewModelOnUpdated;
@@ -112,13 +112,13 @@ namespace GameOfLife.View
     }
 
     public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
-      "ViewModel", typeof(Field), typeof(FieldControl1), new PropertyMetadata(default(Field), OnViewModelChanged));
+      "ViewModel", typeof(PetriDish), typeof(FieldControl), new PropertyMetadata(default(PetriDish), OnViewModelChanged));
 
     private static readonly int CellSize = 5;
 
     private static void OnViewModelChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
     {
-      ((FieldControl1)dependencyObject).OnViewModelChanged(args.OldValue as Field, args.NewValue as Field);
+      ((FieldControl)dependencyObject).OnViewModelChanged(args.OldValue as PetriDish, args.NewValue as PetriDish);
     }
   }
 }
