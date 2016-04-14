@@ -3,8 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:view="clr-namespace:GameOfLife.View"
         xmlns:viewModel="clr-namespace:GameOfLife.ViewModel"
+        xmlns:view="clr-namespace:GameOfLife.View"
         Title="MainWindow" 
         WindowState="Maximized"
         mc:Ignorable="d">

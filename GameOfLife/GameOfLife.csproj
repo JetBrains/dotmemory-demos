@@ -57,7 +57,7 @@
     <Compile Include="ViewModel\PetriDish.cs" />
     <Compile Include="ViewModel\MainScreenViewModel.cs" />
     <Compile Include="ViewModel\TimerImpl.cs" />
-    <Compile Include="View\FieldControl1.cs" />
+    <Compile Include="View\FieldControl.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
