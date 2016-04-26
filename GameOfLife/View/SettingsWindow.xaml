@@ -1,0 +1,28 @@
+﻿<Window x:Class="GameOfLife.View.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:viewModel="clr-namespace:GameOfLife.ViewModel"
+        Title="SettingsWindow" Height="300" Width="300"
+        >
+  <DockPanel DataContext="{x:Static viewModel:Settings.Instance}">
+
+    <StackPanel DockPanel.Dock="Bottom">
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+        <Button Content="OK" Command="{Binding ApplyCommand}" IsDefault="True" Click="OnOk"/>
+        <Button Content="Cancel" Command="{Binding CancelCommand}" IsCancel="True" Click="OnCancel"/>
+      </StackPanel>
+    </StackPanel>
+
+    <StackPanel>
+      <StackPanel>
+        <TextBlock Text="Dish width" />
+        <TextBox Text="{Binding Source={x:Static viewModel:Settings.Instance}, Path=Width}" />
+      </StackPanel>
+
+      <StackPanel>
+        <TextBlock Text="Dish height" />
+        <TextBox Text="{Binding Source={x:Static viewModel:Settings.Instance}, Path=Height}" />
+      </StackPanel>
+    </StackPanel>
+  </DockPanel>
+</Window>

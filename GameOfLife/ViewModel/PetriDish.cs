@@ -48,7 +48,7 @@ namespace GameOfLife.ViewModel
 
     public void GenerateInitialState()
     {
-      var random = new Random(DateTime.Now.Second);
+      var random = new Random((int) (DateTime.UtcNow - DateTime.Today).TotalMilliseconds);
       for (var i = 0; i < width; i++)
         for (var j = 0; j < height; j++)
           currentCells[i, j].IsAlive = random.NextDouble() > 0.8;

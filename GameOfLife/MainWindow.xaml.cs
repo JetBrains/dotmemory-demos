@@ -1,18 +1,34 @@
-﻿using System.Windows;
-using GameOfLife.ViewModel;
+﻿using System;
+using System.Windows;
+using GameOfLife.View;
 
 namespace GameOfLife
 {
   /// <summary>
   /// Interaction logic for MainWindow.xaml
   /// </summary>
-  public partial class MainWindow : Window
+  public partial class MainWindow
   {
+    private readonly ComponentContainer container = new ComponentContainer();
+
     public MainWindow()
     {
       InitializeComponent();
 
-      DataContext = new MainScreenViewModel();
+      var mainScreenViewModel = container.CreateMainViewModel();
+      mainScreenViewModel.ShowSettingsView = ShowSettingsView;
+      DataContext = mainScreenViewModel;
+    }
+
+    protected override void OnClosed(EventArgs e)
+    {
+      container.Dispose();
+    }
+
+    private void ShowSettingsView()
+    {
+      var settingsWindow = new SettingsWindow();
+      settingsWindow.ShowDialog();
     }
   }
 }

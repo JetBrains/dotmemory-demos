@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -6,8 +7,9 @@ using System.Windows.Input;
 
 namespace GameOfLife.ViewModel
 {
-  public class MainScreenViewModel : INotifyPropertyChanged
+  public class MainScreenViewModel : IDisposable, INotifyPropertyChanged
   {
+    private readonly Settings settings;
     private bool isStarted;
     private readonly DelegateCommand addPetriDishCommand;
     private readonly DelegateCommand removePetriDishCommand;
@@ -16,16 +18,17 @@ namespace GameOfLife.ViewModel
     private readonly DelegateCommand oneStepCommand;
     private readonly DelegateCommand clearCommand;
     private readonly DelegateCommand generateCommand;
+    private readonly DelegateCommand showSettingsCommand;
+
+    private Action showSettingsView;
 
     private readonly ObservableCollection<PetriDish> petriDishesCollection = new ObservableCollection<PetriDish>();
-    private const int DefaultDishWidth = 80;
-    private const int DefaultDishHeight = 50;
 
-    private readonly TimerImpl timer = new TimerImpl();
+    private readonly TimerImpl centralTimer = new TimerImpl();
 
-    public MainScreenViewModel(int initialPetriDishesCount = 2)
+    public MainScreenViewModel(int initialPetriDishesCount, Settings settings)
     {
-
+      this.settings = settings;
       addPetriDishCommand = new DelegateCommand(AddPetriDish, () => !isStarted);
       removePetriDishCommand = new DelegateCommand(RemovePetriDish, () => !isStarted);
       startCommand = new DelegateCommand(Start, () => !isStarted);
@@ -33,17 +36,35 @@ namespace GameOfLife.ViewModel
       oneStepCommand = new DelegateCommand(OneStep, () => !isStarted);
       clearCommand = new DelegateCommand(Clear, () => !isStarted);
       generateCommand = new DelegateCommand(Generate, () => !isStarted);
+      showSettingsCommand = new DelegateCommand(ShowSettings, () => !isStarted);
 
-      for (var i = 0; i < initialPetriDishesCount; i++)
-        petriDishesCollection.Add(CreatePetriDish());
+      FillPetriDishesCollection(initialPetriDishesCount);
 
-      foreach (var field in petriDishesCollection)
-        field.GenerateInitialState();
+      settings.SizeChanged += SettingsOnSizeChanged;
+    }
+
+    private void SettingsOnSizeChanged(object sender, EventArgs args)
+    {
+      var count = petriDishesCollection.Count;
+      while (petriDishesCollection.Count > 0)
+        RemovePetriDish();
+
+      FillPetriDishesCollection(count);
+    }
+
+    private void FillPetriDishesCollection(int count)
+    {
+      for (var i = 0; i < count; i++)
+      {
+        var petriDish = CreatePetriDish();
+        petriDish.GenerateInitialState();
+        petriDishesCollection.Add(petriDish);
+      }
     }
 
     private PetriDish CreatePetriDish()
     {
-      return new PetriDish(DefaultDishWidth, DefaultDishHeight, timer);
+      return new PetriDish(settings.Width, settings.Height, centralTimer);
     }
 
     private void AddPetriDish()
@@ -99,28 +120,39 @@ namespace GameOfLife.ViewModel
       get { return generateCommand; }
     }
 
-    public DelegateCommand AddPetriDishCommand
+    public ICommand AddPetriDishCommand
     {
       get { return addPetriDishCommand; }
     }
 
-    public DelegateCommand RemovePetriDishCommand
+    public ICommand RemovePetriDishCommand
     {
       get { return removePetriDishCommand; }
+    }
+
+    public ICommand ShowSettingsCommand
+    {
+      get { return showSettingsCommand; }
+    }
+
+    public Action ShowSettingsView
+    {
+      get { return showSettingsView; }
+      set { showSettingsView = value; }
     }
 
     private void Start()
     {
       isStarted = true;
       UpdateCommandCanExecuteState();
-      timer.Start();
+      centralTimer.Start();
     }
 
     private void Stop()
     {
       isStarted = false;
       UpdateCommandCanExecuteState();
-      timer.Stop();
+      centralTimer.Stop();
     }
 
     private void Generate()
@@ -135,6 +167,11 @@ namespace GameOfLife.ViewModel
         field.Clear();
     }
 
+    private void ShowSettings()
+    {
+      showSettingsView();
+    }
+
     private void UpdateCommandCanExecuteState()
     {
       startCommand.RaiseCanExcuteChanged();
@@ -143,6 +180,12 @@ namespace GameOfLife.ViewModel
       generateCommand.RaiseCanExcuteChanged();
       addPetriDishCommand.RaiseCanExcuteChanged();
       removePetriDishCommand.RaiseCanExcuteChanged();
+      showSettingsCommand.RaiseCanExcuteChanged();
+    }
+
+    public void Dispose()
+    {
+      settings.SizeChanged -= SettingsOnSizeChanged;
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

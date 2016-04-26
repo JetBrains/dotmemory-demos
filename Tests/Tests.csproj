@@ -50,8 +50,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComponentContainerTest.cs" />
     <Compile Include="MainScreenViewModelTest.cs" />
-    <Compile Include="MemoryTest.cs" />
+    <Compile Include="PetriDishTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

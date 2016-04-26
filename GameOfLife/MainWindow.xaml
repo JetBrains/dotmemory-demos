@@ -16,6 +16,7 @@
           <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
             <Button Content="Add Petri Dish" Command="{Binding AddPetriDishCommand}"/>
             <Button Content="Remove Petri Dish" Command="{Binding RemovePetriDishCommand}"/>
+            <Button Content="Settings" Command="{Binding ShowSettingsCommand}"/>
           </StackPanel>
           <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
             <Button Content="Start" Command="{Binding StartCommand}"/>
