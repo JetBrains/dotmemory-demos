@@ -5,7 +5,7 @@ namespace GameOfLife.ViewModel
   public class PetriDish : IDisposable
   {
     private readonly Cell[,] currentCells;
-    private readonly Cell[,] nextGenerationCells;
+    private Cell[,] nextGenerationCells;
     private readonly int height;
     private readonly int width;
     private readonly ITimer timer;
@@ -57,10 +57,13 @@ namespace GameOfLife.ViewModel
 
     private void UpdateCellsState()
     {
+//      nextGenerationCells = new Cell[width, height]; // comment it to fix PetriDishTest.DontRecreateArrays
+
       for (var i = 0; i < width; i++)
         for (var j = 0; j < height; j++)
           nextGenerationCells[i, j] = GetNextGenerationCellUnoptimized(i, j);
-
+//          nextGenerationCells[i, j] = GetNextGenerationCell(i, j); // change to fix PetriDishTest.AlgorithmTraffic
+      
       for (var i = 0; i < width; i++)
         for (var j = 0; j < height; j++)
         {

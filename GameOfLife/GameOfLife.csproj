@@ -50,14 +50,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Common\NotifyCollection.cs" />
     <Compile Include="ComponentContainer.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ViewModel\Cell.cs" />
-    <Compile Include="ViewModel\DelegateCommand.cs" />
+    <Compile Include="EmulateExternalLib\DelegateCommand.cs" />
     <Compile Include="ViewModel\ITimer.cs" />
     <Compile Include="ViewModel\PetriDish.cs" />
     <Compile Include="ViewModel\MainScreenViewModel.cs" />
-    <Compile Include="ViewModel\Settings.cs" />
+    <Compile Include="EmulateExternalLib\Settings.cs" />
     <Compile Include="ViewModel\TimerImpl.cs" />
     <Compile Include="View\FieldControl.cs" />
     <Compile Include="View\SettingsWindow.xaml.cs">

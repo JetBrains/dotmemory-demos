@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Windows.Input;
+using ExternalLib;
+using GameOfLife.Common;
 
 namespace GameOfLife.ViewModel
 {
   public class MainScreenViewModel : IDisposable, INotifyPropertyChanged
   {
-    private readonly Settings settings;
     private bool isStarted;
     private readonly DelegateCommand addPetriDishCommand;
     private readonly DelegateCommand removePetriDishCommand;
@@ -22,13 +21,12 @@ namespace GameOfLife.ViewModel
 
     private Action showSettingsView;
 
-    private readonly ObservableCollection<PetriDish> petriDishesCollection = new ObservableCollection<PetriDish>();
+    private readonly NotifyCollection<PetriDish> petriDishesCollection = new NotifyCollection<PetriDish>();
 
     private readonly TimerImpl centralTimer = new TimerImpl();
 
-    public MainScreenViewModel(int initialPetriDishesCount, Settings settings)
+    public MainScreenViewModel(int initialPetriDishesCount)
     {
-      this.settings = settings;
       addPetriDishCommand = new DelegateCommand(AddPetriDish, () => !isStarted);
       removePetriDishCommand = new DelegateCommand(RemovePetriDish, () => !isStarted);
       startCommand = new DelegateCommand(Start, () => !isStarted);
@@ -40,7 +38,7 @@ namespace GameOfLife.ViewModel
 
       FillPetriDishesCollection(initialPetriDishesCount);
 
-      settings.SizeChanged += SettingsOnSizeChanged;
+      Settings.Instance.SizeChanged += SettingsOnSizeChanged;
     }
 
     private void SettingsOnSizeChanged(object sender, EventArgs args)
@@ -64,7 +62,7 @@ namespace GameOfLife.ViewModel
 
     private PetriDish CreatePetriDish()
     {
-      return new PetriDish(settings.Width, settings.Height, centralTimer);
+      return new PetriDish(Settings.Instance.Width, Settings.Instance.Height, centralTimer);
     }
 
     private void AddPetriDish()
@@ -76,12 +74,8 @@ namespace GameOfLife.ViewModel
 
     private void RemovePetriDish()
     {
-      var petriDish = petriDishesCollection.LastOrDefault();
-      if (petriDish != null)
-      {
-        petriDishesCollection.Remove(petriDish);
-//        petriDish.Dispose(); //fix a leak
-      }
+      var removedDish = petriDishesCollection.RemoveLast();
+//      removedDish.Dispose(); //fix MainScreenViewModelTest.RemovePetriDish
     }
 
     private void OneStep()
@@ -185,7 +179,7 @@ namespace GameOfLife.ViewModel
 
     public void Dispose()
     {
-      settings.SizeChanged -= SettingsOnSizeChanged;
+ //     Settings.Instance.SizeChanged -= SettingsOnSizeChanged; // fix MainScreenViewModelTest.NoObjectsLeakedOnEventHandler and AllObjectsAreReleased
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

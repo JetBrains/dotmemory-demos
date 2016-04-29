@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows;
 using GameOfLife.View;
 
 namespace GameOfLife
@@ -25,7 +24,7 @@ namespace GameOfLife
       container.Dispose();
     }
 
-    private void ShowSettingsView()
+    private static void ShowSettingsView()
     {
       var settingsWindow = new SettingsWindow();
       settingsWindow.ShowDialog();

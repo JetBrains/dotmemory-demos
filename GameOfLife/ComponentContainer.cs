@@ -6,11 +6,10 @@ namespace GameOfLife
   public class ComponentContainer : IDisposable
   {
     private MainScreenViewModel mainViewModel;
-    private Settings settingsSingleton = new Settings();
-
     public MainScreenViewModel CreateMainViewModel()
     {
-      mainViewModel = new MainScreenViewModel(2, settingsSingleton);
+//      if(mainViewModel == null) // fix 
+        mainViewModel = new MainScreenViewModel(2);
       return mainViewModel;
     }
 
@@ -18,7 +17,6 @@ namespace GameOfLife
     {
       mainViewModel.Dispose(); // fix a leak
       mainViewModel = null;
-      settingsSingleton = null;
     }
   }
 }

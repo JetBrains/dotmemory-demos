@@ -1,5 +1,4 @@
-﻿using GameOfLife;
-using GameOfLife.ViewModel;
+﻿using GameOfLife.ViewModel;
 using JetBrains.dotMemoryUnit;
 using NUnit.Framework;
 
@@ -8,12 +7,11 @@ namespace Tests
   public class MainScreenViewModelTest
   {
     [Test]
-    public void RemovePetriDishTest()
+    public void RemovePetriDish()
     {
-      using (var container = new ComponentContainer())
+      // --arrange
+      using(var target = new MainScreenViewModel(0))
       {
-        // --arrange
-        var target = container.CreateMainViewModel();
         target.AddPetriDishCommand.Execute(null);
 
         // --act
@@ -22,33 +20,48 @@ namespace Tests
         // --assert
         Assert.That(target.PetriDishesCollection, Has.Count.EqualTo(0));
 
-        // --memory
+        // --assert memory
         dotMemory.Check(memory =>
-          Assert.That(
-            memory.GetObjects(where => where.Type.Is<PetriDish>()).ObjectsCount,
+          Assert.That(memory.GetObjects(where => where.
+            Type.Is<PetriDish>())
+              .ObjectsCount,
             Is.EqualTo(0)));
       }
     }
 
     [Test]
-    public void EventHandlerLeakTest()
+    public void NoObjectsLeakedOnEventHandler()
     {
-      using (var container = new ComponentContainer())
-      {
-        // --arrange
-        var target = container.CreateMainViewModel();
+      // --act
+      CreateAndReleaseMainScreenViewModel();
 
-        // --act
-        target = null;
+      // --assert
+      dotMemory.Check(memory => 
+        Assert.That(memory.GetObjects(where => where.
+          LeakedOnEventHandler())
+            .ObjectsCount,
+          Is.EqualTo(0)));
+    }
 
-        // --assert
-        dotMemory.Check(memory =>
-        {
-          Assert.That(
-            memory.GetObjects(where => where.LeakedOnEventHandler()).ObjectsCount,
-            Is.EqualTo(0), "Leaked");
-        });
-      }
+    [Test]
+    public void AllObjectsAreReleased()
+    {
+      // --act
+      CreateAndReleaseMainScreenViewModel();
+
+      // --assert
+      dotMemory.Check(memory => 
+        Assert.That(
+          memory.GetObjects(where => where.
+            Namespace.Like("GameOfLife.*"))
+              .ObjectsCount,
+          Is.EqualTo(0)));
+    }
+
+    private static void CreateAndReleaseMainScreenViewModel()
+    {
+      using (new MainScreenViewModel(2))
+      {}
     }
   }
 }

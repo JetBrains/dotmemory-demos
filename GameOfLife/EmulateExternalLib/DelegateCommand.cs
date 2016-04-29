@@ -2,7 +2,8 @@
 using System.Windows.Input;
 using JetBrains.Annotations;
 
-namespace GameOfLife.ViewModel
+// ReSharper disable once CheckNamespace
+namespace ExternalLib
 {
   public class DelegateCommand : ICommand
   {
