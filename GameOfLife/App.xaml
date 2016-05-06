@@ -3,6 +3,59 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
-    </Application.Resources>
+    <SolidColorBrush x:Key="RegularElementBackground">#F6F5FA</SolidColorBrush>
+    <SolidColorBrush x:Key="ActiveElementBackground">#B3D2F4</SolidColorBrush>
+    <SolidColorBrush x:Key="PressedElementBackground">#67A5E9</SolidColorBrush>
+    <SolidColorBrush x:Key="DisabledElementBackground">#F5F5F5</SolidColorBrush>
+
+    <SolidColorBrush x:Key="RegularElementForeground">#442C32</SolidColorBrush>
+    <SolidColorBrush x:Key="ActiveElementForeground">#442C32</SolidColorBrush>
+    <SolidColorBrush x:Key="PressedElementForeground">#FFFFFF</SolidColorBrush>
+    <SolidColorBrush x:Key="DisabledElementForeground">#A29598</SolidColorBrush>
+
+    <SolidColorBrush x:Key="RegularElementBorderBrush">#B7B4D6</SolidColorBrush>
+    <SolidColorBrush x:Key="ActiveElementBorderBrush">#67A5E9</SolidColorBrush>
+    <SolidColorBrush x:Key="PressedElementBorderBrush">#67A5E9</SolidColorBrush>
+    <SolidColorBrush x:Key="DisabledElementBorderBrush">#CCCCCC</SolidColorBrush>
+      
+    <Style x:Key="FlatButton" TargetType="ButtonBase">
+      <Setter Property="SnapsToDevicePixels" Value="True"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="{x:Type ButtonBase}">
+            <Border x:Name="Border" Padding="{TemplateBinding Padding}" Background="{StaticResource RegularElementBackground}"
+                  BorderThickness="{TemplateBinding BorderThickness}"
+                  BorderBrush="{StaticResource RegularElementBorderBrush}">
+              <ContentPresenter x:Name="Content"
+                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsEnabled" Value="False">
+                <Setter TargetName="Border" Property="Background" Value="{StaticResource DisabledElementBackground}"/>
+                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource DisabledElementBorderBrush}"/>
+                <Setter Property="Foreground" Value="{StaticResource DisabledElementForeground}"/>
+              </Trigger>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="Border" Property="Background" Value="{StaticResource ActiveElementBackground}"/>
+                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource ActiveElementBorderBrush}"/>
+                <Setter Property="Foreground" Value="{StaticResource ActiveElementForeground}"/>
+              </Trigger>
+              <Trigger Property="IsFocused" Value="True">
+                <Setter TargetName="Border" Property="Background" Value="{StaticResource ActiveElementBackground}"/>
+                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource ActiveElementBorderBrush}"/>
+                <Setter Property="Foreground" Value="{StaticResource ActiveElementForeground}"/>
+              </Trigger>
+              <Trigger Property="IsPressed" Value="True">
+                <Setter TargetName="Border" Property="Background" Value="{StaticResource PressedElementBackground}"/>
+                <Setter TargetName="Border" Property="BorderBrush" Value="{StaticResource PressedElementBorderBrush}"/>
+                <Setter Property="Foreground" Value="{StaticResource PressedElementForeground}"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+      <Setter Property="Foreground" Value="{StaticResource RegularElementForeground}"/>
+    </Style>
+  </Application.Resources>
 </Application>

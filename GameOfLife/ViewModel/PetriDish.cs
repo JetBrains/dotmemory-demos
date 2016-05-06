@@ -57,12 +57,12 @@ namespace GameOfLife.ViewModel
 
     private void UpdateCellsState()
     {
-//      nextGenerationCells = new Cell[width, height]; // comment it to fix PetriDishTest.DontRecreateArrays
+      nextGenerationCells = new Cell[width, height]; // comment it to fix PetriDishTest.DontRecreateArrays
 
       for (var i = 0; i < width; i++)
         for (var j = 0; j < height; j++)
           nextGenerationCells[i, j] = GetNextGenerationCellUnoptimized(i, j);
-//          nextGenerationCells[i, j] = GetNextGenerationCell(i, j); // change to fix PetriDishTest.AlgorithmTraffic
+//          nextGenerationCells[i, j] = GetNextGenerationCell(i, j); // change to fix PetriDishTest.AlgorithmTraffic and PetriDishTest.WholeRunTraffic
       
       for (var i = 0; i < width; i++)
         for (var j = 0; j < height; j++)

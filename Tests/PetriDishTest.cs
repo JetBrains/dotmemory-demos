@@ -7,10 +7,12 @@ namespace Tests
 {
   public class PetriDishTest
   {
+    const int Mb = 1024*1024;
+
     private readonly ITimer timer = MockRepository.GenerateStub<ITimer>();
 
     [Test]
-    [AssertTraffic(AllocatedSizeInBytes = 1500000)] // --assert
+    [AssertTraffic(AllocatedSizeInBytes = 2*Mb)] // --assert
     public void WholeRunTraffic()
     {
       // --act
@@ -50,8 +52,7 @@ namespace Tests
       var memoryPoint1 = dotMemory.Check();
 
       // --act
-      for (var i = 0; i < 100; i++)
-        target.PerformOneStep();
+      target.PerformOneStep();
 
       // --assert
       dotMemory.Check(memory =>

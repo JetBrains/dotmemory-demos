@@ -60,7 +60,7 @@
     <Compile Include="ViewModel\MainScreenViewModel.cs" />
     <Compile Include="EmulateExternalLib\Settings.cs" />
     <Compile Include="ViewModel\TimerImpl.cs" />
-    <Compile Include="View\FieldControl.cs" />
+    <Compile Include="View\PetriDishControl.cs" />
     <Compile Include="View\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>

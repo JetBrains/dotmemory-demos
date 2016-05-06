@@ -12,11 +12,19 @@
   <FrameworkElement.Resources>
     <DataTemplate DataType="{x:Type viewModel:MainScreenViewModel}">
       <DockPanel>
+        <FrameworkElement.Resources>
+          <Style TargetType="Button" BasedOn="{StaticResource FlatButton}">
+            <Setter Property="Margin" Value="5, 0"/>
+            <Setter Property="Width" Value="120"/>
+            <Setter Property="Height" Value="32"/>
+          </Style>
+        </FrameworkElement.Resources>
+
         <DockPanel Margin="0,5" DockPanel.Dock="Top">
-          <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+          <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" >
             <Button Content="Add Petri Dish" Command="{Binding AddPetriDishCommand}"/>
             <Button Content="Remove Petri Dish" Command="{Binding RemovePetriDishCommand}"/>
-            <Button Content="Settings" Command="{Binding ShowSettingsCommand}"/>
+            <Button Content="Settings" IsEnabled="False" Command="{Binding ShowSettingsCommand}"/>
           </StackPanel>
           <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
             <Button Content="Start" Command="{Binding StartCommand}"/>
@@ -26,8 +34,8 @@
             <Button Content="Clear" Command="{Binding ClearCommand}"/>
           </StackPanel>
         </DockPanel>
-        
-        <ItemsControl ItemsSource="{Binding PetriDishesCollection}">
+
+        <ItemsControl ItemsSource="{Binding PetriDishesCollection}" Background="DarkGray">
           <ItemsControl.ItemsPanel>
             <ItemsPanelTemplate>
               <WrapPanel />
@@ -39,15 +47,15 @@
             </Style>
           </ItemsControl.ItemContainerStyle>
         </ItemsControl>
-        
+
       </DockPanel>
     </DataTemplate>
-    
+
     <DataTemplate DataType="{x:Type viewModel:PetriDish}">
-      <view:FieldControl ViewModel="{Binding}" />
+      <view:PetriDishControl ViewModel="{Binding}" />
     </DataTemplate>
   </FrameworkElement.Resources>
-  
+
   <ContentControl Content="{Binding}" />
 
 </Window>

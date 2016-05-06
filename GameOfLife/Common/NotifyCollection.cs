@@ -22,6 +22,7 @@ namespace GameOfLife.Common
     {
       EnsureCapacity();
       array[count++] = item;
+      RaiseCollectionChanged();
     }
 
     public T RemoveLast()
@@ -29,6 +30,7 @@ namespace GameOfLife.Common
       --count;
       var last = array[count];
       array[count] = default(T);
+      RaiseCollectionChanged();
       return last;
     }
 

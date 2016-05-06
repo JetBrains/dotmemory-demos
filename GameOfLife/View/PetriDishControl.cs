@@ -8,7 +8,7 @@ using GameOfLife.ViewModel;
 
 namespace GameOfLife.View
 {
-  public class FieldControl : ContentControl
+  public class PetriDishControl : ContentControl
   {
     private Canvas canvas;
     private Ellipse[,] ellipses;
@@ -38,9 +38,9 @@ namespace GameOfLife.View
           ellipses[i, j].Fill =
             cell.IsAlive
               ? cell.Age < 2
-                ? Brushes.White
-                : Brushes.DarkGray
-              : Brushes.Gray;
+                ? YoungCellBrush
+                : OldCellBrush
+              : Brushes.Transparent;
         }
     }
 
@@ -68,7 +68,7 @@ namespace GameOfLife.View
         var width = newValue.Cells.GetLength(0);
         var height = newValue.Cells.GetLength(1);
 
-        canvas = new Canvas {Background = Brushes.Gray};
+        canvas = new Canvas {Background = BackgroundBrush};
         ellipses = new Ellipse[width, height];
         for (var i = 0; i < width; i++)
           for (var j = 0; j < height; j++)
@@ -110,19 +110,23 @@ namespace GameOfLife.View
         {
           cells[i, j].IsAlive = true;
           cells[i, j].Age = 0;
-          cellVisual.Fill = Brushes.White;
+          cellVisual.Fill = YoungCellBrush;
         }
       }
     }
 
     public static readonly DependencyProperty ViewModelProperty = DependencyProperty.Register(
-      "ViewModel", typeof(PetriDish), typeof(FieldControl), new PropertyMetadata(default(PetriDish), OnViewModelChanged));
+      "ViewModel", typeof(PetriDish), typeof(PetriDishControl), new PropertyMetadata(default(PetriDish), OnViewModelChanged));
 
-    private static readonly int CellSize = 5;
+    private const int CellSize = 5;
+
+    private static readonly SolidColorBrush BackgroundBrush = Brushes.Gray;
+    private static readonly SolidColorBrush YoungCellBrush = Brushes.White;
+    private static readonly SolidColorBrush OldCellBrush = Brushes.DarkGray;
 
     private static void OnViewModelChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
     {
-      ((FieldControl)dependencyObject).OnViewModelChanged(args.OldValue as PetriDish, args.NewValue as PetriDish);
+      ((PetriDishControl)dependencyObject).OnViewModelChanged(args.OldValue as PetriDish, args.NewValue as PetriDish);
     }
   }
 }
