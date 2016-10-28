@@ -54,6 +54,7 @@
     <Compile Include="MainScreenViewModelTest.cs" />
     <Compile Include="PetriDishTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SimplestDemoTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GameOfLife\GameOfLife.csproj">
