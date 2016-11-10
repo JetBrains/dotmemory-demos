@@ -2,8 +2,8 @@
 
 namespace GameOfLife.ViewModel
 {
-  public interface ITimer
-  {
-    event Action Tick;
-  }
+    public interface ITimer
+    {
+        event Action Tick;
+    }
 }

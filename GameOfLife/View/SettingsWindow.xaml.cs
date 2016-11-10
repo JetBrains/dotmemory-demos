@@ -2,24 +2,24 @@
 
 namespace GameOfLife.View
 {
-  /// <summary>
-  ///   Interaction logic for SettingsWindow.xaml
-  /// </summary>
-  public partial class SettingsWindow
-  {
-    public SettingsWindow()
+    /// <summary>
+    ///   Interaction logic for SettingsWindow.xaml
+    /// </summary>
+    public partial class SettingsWindow
     {
-      InitializeComponent();
-    }
+        public SettingsWindow()
+        {
+            InitializeComponent();
+        }
 
-    private void OnOk(object sender, RoutedEventArgs e)
-    {
-      DialogResult = true;
-    }
+        private void OnOk(object sender, RoutedEventArgs e)
+        {
+            DialogResult = true;
+        }
 
-    private void OnCancel(object sender, RoutedEventArgs e)
-    {
-      DialogResult = false;
+        private void OnCancel(object sender, RoutedEventArgs e)
+        {
+            DialogResult = false;
+        }
     }
-  }
 }

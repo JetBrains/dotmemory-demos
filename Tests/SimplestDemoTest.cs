@@ -9,113 +9,136 @@ using Timer = System.Timers.Timer;
 
 namespace Production
 {
-  public interface IShape{}
-  public class Triangle : IShape{}
-  public class Rectangle : IShape{}
-  public class Circle : IShape{}
-
-  public class ShapeGenerator : IDisposable
-  {
-    private readonly Action<IShape> consumer;
-    private readonly Timer timer;
-
-    public ShapeGenerator(Action<IShape> consumer, TimeSpan frequency)
+    public interface IShape
     {
-      this.consumer = consumer;
-      timer = new Timer(frequency.TotalMilliseconds);
-      timer.Elapsed += OnTimerTick;
-      timer.Start();
     }
 
-    private void OnTimerTick(object state, ElapsedEventArgs elapsedEventArgs)
+    public class Triangle : IShape
     {
-      var rand = DateTime.UtcNow.Ticks % 3;
-      switch (rand)
-      {
-        case 0:
-          consumer(new Triangle());
-          break;
-        case 1:
-          consumer(new Rectangle());
-          break;
-        case 2:
-          consumer(new Circle());
-          break;
-      }
     }
 
-    public void Dispose()
+    public class Rectangle : IShape
     {
-      // uncomment it to fix LeakTest (all other tests also will fail because of this leak)
-      //timer.Elapsed -= OnTimerTick;
     }
-  }
+
+    public class Circle : IShape
+    {
+    }
+
+    public class ShapeGenerator : IDisposable
+    {
+        private readonly Action<IShape> consumer;
+        private readonly Timer timer;
+
+        public ShapeGenerator(Action<IShape> consumer, TimeSpan frequency)
+        {
+            this.consumer = consumer;
+            timer = new Timer(frequency.TotalMilliseconds);
+            timer.Elapsed += OnTimerTick;
+            timer.Start();
+        }
+
+        private void OnTimerTick(object state, ElapsedEventArgs elapsedEventArgs)
+        {
+            var rand = DateTime.UtcNow.Ticks % 3;
+            switch (rand)
+            {
+                case 0:
+                    consumer(new Triangle());
+                    break;
+                case 1:
+                    consumer(new Rectangle());
+                    break;
+                case 2:
+                    consumer(new Circle());
+                    break;
+            }
+        }
+
+        public void Dispose()
+        {
+            // uncomment it to fix LeakTest (all other tests also will fail because of this leak)
+            //timer.Elapsed -= OnTimerTick;
+        }
+    }
 }
 
 namespace Tests
 {
-  public class SimplestDemoTest
-  {
-    [Test]
-    public void LeakTest()
+    public class SimplestDemoTest
     {
-      var isolator = new Action(() =>
-      {
-        using (new ShapeGenerator(_ => { }, TimeSpan.FromMilliseconds(100)))
-          Thread.Sleep(300);
-      });
-
-      isolator();
-
-      dotMemory.Check(memory =>
-          Assert.That(memory
-            .GetObjects(
-              where => where.Type.Is<ShapeGenerator>())
-            .ObjectsCount,
-            Is.EqualTo(0)));
-    }
-
-    [AssertTraffic(AllocatedObjectsCount = 3, Interfaces = new[]{typeof(IShape)})]
-    [Test(Description = "Should use singletons and should not produce more than 3 shapes")]
-    public void TrafficTest()
-    {
-      using(new ShapeGenerator(_ =>{}, TimeSpan.FromMilliseconds(100)))
-        Thread.Sleep(1000); // generate ~10 shapes
-    }
-
-    [Test]
-    public void MidleAgeTest()
-    {
-      using (new ShapeGenerator(_ => { }, TimeSpan.FromMilliseconds(100)))
-      {
-        Thread.Sleep(1000); // generate ~10 shapes
-
-        dotMemory.Check(memory =>
-          {
-            var objectSet = memory
-              .GetObjects(where => where.Namespace.Like("Production"))
-              .GetObjects(where => where.Generation.Is(Generation.Gen2));
-            Assert.That(objectSet.ObjectsCount, Is.EqualTo(0));
-          }
-        );
-      }
-    }
-
-    [Test]
-    public void NoNewObjectsExceptShapesTest()
-    {
-      using(new ShapeGenerator(_ => {}, TimeSpan.FromMilliseconds(100)))
-      {
-        var memoryCheckPoint = dotMemory.Check();
-        Thread.Sleep(1000); // generate ~10 shapes
-
-        dotMemory.Check(memory =>
+        [Test]
+        public void LeakTest()
         {
-          var newTotalCount = memory.GetDifference(memoryCheckPoint).GetNewObjects(where => where.Namespace.Like("Production")).ObjectsCount;
-          var newShapesCount = memory.GetDifference(memoryCheckPoint).GetNewObjects(where => where.Interface.Is<IShape>()).ObjectsCount;
-          Assert.That(newTotalCount - newShapesCount, Is.EqualTo(0));
-        });
-      }
+            var isolator = new Action(() =>
+            {
+                using (new ShapeGenerator(_ => { }, TimeSpan.FromMilliseconds(100)))
+                {
+                    Thread.Sleep(300);
+                }
+            });
+
+            isolator();
+
+            dotMemory.Check(memory =>
+                Assert.That(memory
+                        .GetObjects(where => where.Type.Is<ShapeGenerator>())
+                        .ObjectsCount,
+                    Is.EqualTo(0)));
+        }
+
+        [AssertTraffic(AllocatedObjectsCount = 3, Interfaces = new[] {typeof(IShape)})]
+        [Test(Description = "Should use singletons and should not produce more than 3 shapes")]
+        public void TrafficTest()
+        {
+            using (new ShapeGenerator(_ => { }, TimeSpan.FromMilliseconds(100)))
+            {
+                Thread.Sleep(1000); // generate ~10 shapes
+            }
+        }
+
+        [Test]
+        public void MidleAgeTest()
+        {
+            using (new ShapeGenerator(_ => { }, TimeSpan.FromMilliseconds(100)))
+            {
+                Thread.Sleep(1000); // generate ~10 shapes
+
+                dotMemory.Check(memory =>
+                    {
+                        var objectSet = memory
+                            .GetObjects(where => where.Namespace.Like("Production"))
+                            .GetObjects(where => where.Generation.Is(Generation.Gen2));
+
+                        Assert.That(objectSet.ObjectsCount, Is.EqualTo(0));
+                    }
+                );
+            }
+        }
+
+        [Test]
+        public void NoNewObjectsExceptShapesTest()
+        {
+            using (new ShapeGenerator(_ => { }, TimeSpan.FromMilliseconds(100)))
+            {
+                var memoryCheckPoint = dotMemory.Check();
+                Thread.Sleep(1000); // generate ~10 shapes
+
+                dotMemory.Check(memory =>
+                {
+                    var newTotalCount =
+                        memory.GetDifference(memoryCheckPoint)
+                            .GetNewObjects(where => where.Namespace.Like("Production"))
+                            .ObjectsCount;
+
+                    var newShapesCount =
+                        memory.GetDifference(memoryCheckPoint)
+                            .GetNewObjects(where => where.Interface.Is<IShape>())
+                            .ObjectsCount;
+
+                    Assert.That(newTotalCount - newShapesCount, Is.EqualTo(0));
+                });
+            }
+        }
     }
-  }
 }
