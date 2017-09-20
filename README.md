@@ -1,3 +1,5 @@
+[![internal JetBrains project](http://jb.gg/badges/internal-flat-square.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub)
+
 # DotMemory Demos
 
 This repository contains a demo application that can be used to demonstrate JetBrains [dotMemory](https://www.jetbrains.com/dotmemory) and [dotMemory Unit](https://www.jetbrains.com/dotmemory).
