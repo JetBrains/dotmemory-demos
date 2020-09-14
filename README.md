@@ -27,7 +27,7 @@ There are various issues to be uncovered. Some are easy to find using dotMemory'
 
 ### Unit testing
 
-Discovering memory issues is one thing, making sure the will not occur again is another. The tests project contains various unit tests that make use of [dotMemory Unit](https://www.jetbrains.com/dotmemory) and replay profiling sessions in code. These tests will fail when run, as the memory leaks are still in the code base. Throughout the code, there are also comments that help resolve the memory issues.
+Discovering memory issues is one thing, making sure they will not occur again is another. The tests project contains various unit tests that make use of [dotMemory Unit](https://www.jetbrains.com/dotmemory) and replay profiling sessions in code. These tests will fail when run, as the memory leaks are still in the code base. Throughout the code, there are also comments that help resolve the memory issues.
 
 For example, this test verifies the amount of memory allocated during execution:
 

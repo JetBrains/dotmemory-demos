@@ -15,14 +15,17 @@ namespace Production
 
     public class Triangle : IShape
     {
+        public static readonly Triangle Instance = new Triangle();
     }
 
     public class Rectangle : IShape
     {
+        public static readonly Rectangle Instance = new Rectangle();
     }
 
     public class Circle : IShape
     {
+        public static readonly Circle Instance = new Circle();
     }
 
     public class ShapeGenerator : IDisposable
@@ -44,21 +47,23 @@ namespace Production
             switch (rand)
             {
                 case 0:
-                    consumer(new Triangle());
+                    // consumer(new Triangle());
+                    consumer(Triangle.Instance); // change to fix TrafficTest
                     break;
                 case 1:
-                    consumer(new Rectangle());
+                    // consumer(new Rectangle());
+                    consumer(Rectangle.Instance); // change to fix TrafficTest
                     break;
                 case 2:
-                    consumer(new Circle());
+                    // consumer(new Circle());
+                    consumer(Circle.Instance); // change to fix TrafficTest
                     break;
             }
         }
 
         public void Dispose()
         {
-            // uncomment it to fix LeakTest (all other tests also will fail because of this leak)
-            //timer.Elapsed -= OnTimerTick;
+            timer.Elapsed -= OnTimerTick;
         }
     }
 }
@@ -98,7 +103,7 @@ namespace Tests
         }
 
         [Test]
-        public void MidleAgeTest()
+        public void MiddleAgeTest()
         {
             using (new ShapeGenerator(_ => { }, TimeSpan.FromMilliseconds(100)))
             {
@@ -127,12 +132,14 @@ namespace Tests
                 dotMemory.Check(memory =>
                 {
                     var newTotalCount =
-                        memory.GetDifference(memoryCheckPoint)
+                        memory
+                            .GetDifference(memoryCheckPoint)
                             .GetNewObjects(where => where.Namespace.Like("Production"))
                             .ObjectsCount;
 
                     var newShapesCount =
-                        memory.GetDifference(memoryCheckPoint)
+                        memory
+                            .GetDifference(memoryCheckPoint)
                             .GetNewObjects(where => where.Interface.Is<IShape>())
                             .ObjectsCount;
 

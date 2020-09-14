@@ -37,10 +37,12 @@ namespace Tests
 
             // --assert
             dotMemory.Check(memory =>
-                Assert.That(memory.GetObjects(where => where.
-                            LeakedOnEventHandler())
-                        .ObjectsCount,
-                    Is.EqualTo(0)));
+            {
+                Assert.That(
+                    memory.GetObjects(where => where.Namespace.Like("GameOfLife.*")) // include only objects from namespace "GameOfLife"
+                          .GetObjects(where => where.LeakedOnEventHandler()).ObjectsCount,
+                    Is.EqualTo(0));
+            });
         }
 
         [Test]
