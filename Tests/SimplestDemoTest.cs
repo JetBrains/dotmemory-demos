@@ -47,16 +47,16 @@ namespace Production
             switch (rand)
             {
                 case 0:
-                    // consumer(new Triangle());
-                    consumer(Triangle.Instance); // change to fix TrafficTest
+                    consumer(new Triangle());
+                    // consumer(Triangle.Instance); // change to fix TrafficTest
                     break;
                 case 1:
-                    // consumer(new Rectangle());
-                    consumer(Rectangle.Instance); // change to fix TrafficTest
+                    consumer(new Rectangle());
+                    // consumer(Rectangle.Instance); // change to fix TrafficTest
                     break;
                 case 2:
-                    // consumer(new Circle());
-                    consumer(Circle.Instance); // change to fix TrafficTest
+                    consumer(new Circle());
+                    // consumer(Circle.Instance); // change to fix TrafficTest
                     break;
             }
         }
