@@ -5,9 +5,12 @@ Packages/
 Bin/
 Obj/
 
-# Visual Studion and ReSharper files
+# Visual Studio and ReSharper files
 _ReSharper.Caches/
 .vs/
 *.sdf
 *.suo
 *.user
+
+# Rider Files
+.idea/
