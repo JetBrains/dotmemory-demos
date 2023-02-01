@@ -1,4 +1,4 @@
-[![internal JetBrains project](http://jb.gg/badges/internal-flat-square.svg)](https://confluence.jetbrains.com/display/ALL/JetBrains+on+GitHub)
+[![internal JetBrains project](http://jb.gg/badges/internal-flat-square.svg)](https://github.com/JetBrains)
 
 # DotMemory Demos
 
